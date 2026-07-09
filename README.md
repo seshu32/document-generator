@@ -27,7 +27,7 @@ Install dependencies and start the server:
 
 ```bash
 npm install
-npm start
+APP_PASSWORD=change-me SHEET_WEBAPP_URL=https://script.google.com/macros/s/.../exec npm start
 ```
 
 Then open:
@@ -54,6 +54,16 @@ Start command: npm start
 Port: 3000
 Health check path: /healthz
 ```
+
+Environment variables:
+
+```text
+APP_PASSWORD=required app login password
+SESSION_SECRET=long random string for stable login sessions
+SHEET_WEBAPP_URL=Google Apps Script Web App URL for sheet sync
+```
+
+`APP_PASSWORD` is required. If it is missing, the app returns a configuration error instead of opening the document generator.
 
 ## External Assets and Services
 

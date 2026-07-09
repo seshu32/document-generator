@@ -57,7 +57,6 @@ button:hover{background:var(--offwhite);border-color:var(--line-strong)}
 .sync-status{font-size:10px;line-height:1.5;color:var(--charcoal);margin-top:7px}
 .sync-status.ok{color:var(--forest)}
 .sync-status.warn{color:var(--terracotta)}
-.sheet-url-box{min-height:72px;font-size:11px;line-height:1.45;overflow-wrap:anywhere;word-break:break-all}
 .sheet-link{display:block;margin-top:8px;font-size:10px;color:var(--forest);text-decoration:none;line-height:1.4}
 .sheet-link:hover{text-decoration:underline}
 .pay-row,.pay-row.eoi-pay-row{display:grid!important;grid-template-columns:1fr!important;gap:8px;align-items:start;margin-bottom:10px!important;padding:10px;border:1px solid var(--line);border-radius:6px;background:#fff}
@@ -214,13 +213,7 @@ button:hover{background:var(--offwhite);border-color:var(--line-strong)}
   </div>
   <div id="user-guide" class="smart-guide" aria-live="polite"></div>
   <div id="save-feedback" class="save-feedback" aria-live="polite"></div>
-  <div class="form-band sheet-sync-panel" hidden>
-    <div class="sec-head">Google Sheets sync</div>
-    <div class="sec-note">Paste the Apps Script Web App URL once. Each Save will add one row to the sheet.</div>
-    <div class="ff"><div class="lbl">Sheet Web App URL</div><textarea id="sheet-url" class="sheet-url-box" placeholder="https://script.google.com/macros/s/..." oninput="saveSheetUrl()" spellcheck="false"></textarea></div>
-    <div id="sheet-status" class="sync-status">Not connected. Local Save will still work.</div>
-    <a class="sheet-link" href="https://docs.google.com/spreadsheets/d/1t4YGZTXEbW-iiOEvrn19Z3M8uXGB_gMFlnKf_diTs6Y/edit" target="_blank" rel="noopener">Open log sheet: Invoice / MoU / EOI</a>
-  </div>
+  <div id="sheet-status" class="sync-status">Sheets sync runs through the server when configured.</div>
 
   <!-- INVOICE FORM -->
   <div id="form-invoice">
@@ -689,8 +682,6 @@ const LOGO_HTML = `<div class="dh-logo-wrap"><img src="${LOGO_URL}" class="dh-lo
 
 let currentTab = 'invoice';
 const SK = 'beforest_docs_v3';
-const SHEET_URL_KEY = 'beforest_sheet_webhook_url';
-const DEFAULT_SHEET_WEBAPP_URL = 'https://script.google.com/a/macros/beforest.co/s/AKfycbyqm0WupR-hetB9OAS_WO8OYPT8qjK2Bko3TODbbvGGtzeEjLjA31W0WflPipAmAlkt2Q/exec';
 
 function fd(val){if(!val)return'-';const d=new Date(val+'T00:00:00');return d.toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});}
 function fdateOrText(val){return /^\d{4}-\d{2}-\d{2}$/.test(val)?fd(val):val;}
@@ -770,19 +761,8 @@ function setSheetStatus(msg,type){
   el.textContent=msg;
   el.className='sync-status '+(type||'');
 }
-function saveSheetUrl(){
-  const url=v('sheet-url').trim();
-  if(url)localStorage.setItem(SHEET_URL_KEY,url);
-  else localStorage.removeItem(SHEET_URL_KEY);
-  setSheetStatus(url?'Connected. Save will also send to Google Sheets.':'Not connected. Local Save will still work.',url?'ok':'');
-}
 function initSheetSync(){
-  const params=new URLSearchParams(window.location.search);
-  const urlFromParam=params.get('sheetUrl')||params.get('sheet_url')||'';
-  if(urlFromParam)localStorage.setItem(SHEET_URL_KEY,urlFromParam.trim());
-  const url=(localStorage.getItem(SHEET_URL_KEY)||DEFAULT_SHEET_WEBAPP_URL||'').trim();
-  setVal('sheet-url',url);
-  setSheetStatus(url?'Connected. Save will also send to Google Sheets.':'Not connected. Local Save will still work.',url?'ok':'');
+  setSheetStatus('Sheets sync runs through the server when configured.','');
 }
 function showAutofillToast(preset,fields){
   const toast=document.getElementById('autofill-toast');
@@ -1493,20 +1473,15 @@ function safeSheetCell(value){
   return /^[=+\-@]/.test(value)?"'"+value:value;
 }
 async function submitToSheet(record){
-  const url=(localStorage.getItem(SHEET_URL_KEY)||DEFAULT_SHEET_WEBAPP_URL||'').trim();
-  if(!url){
-    setSheetStatus('Saved locally. Add a Sheet Web App URL to sync rows.','warn');
-    setSaveFeedback('Saved locally only. Google Sheets is not connected yet.', 'warn');
-    return;
-  }
   setSheetStatus('Saving to Google Sheets...','');
   const payload=await sheetPayload(record);
   try{
-    await fetch(url,{method:'POST',mode:'no-cors',credentials:'include',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
+    const res=await fetch('/api/sheet-sync',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    if(!res.ok)throw new Error('Sheets sync failed');
     setSheetStatus('Saved locally and sent to Google Sheets.','ok');
     setSaveFeedback('Saved locally and sent to Google Sheets.', 'ok');
   }catch(err){
-    setSheetStatus('Saved locally, but Sheets sync failed. Check the Web App URL.','warn');
+    setSheetStatus('Saved locally, but Sheets sync is not configured or failed.','warn');
     setSaveFeedback('Saved locally, but Google Sheets sync failed.', 'warn');
   }
 }
