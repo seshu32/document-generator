@@ -13,25 +13,46 @@ The app currently supports:
 ```text
 .
 |-- beforest-document-generator-branded.html
-`-- README.md
+|-- Dockerfile
+|-- package.json
+|-- README.md
+`-- server.js
 ```
 
-The main application is `beforest-document-generator-branded.html`.
+The main application is `beforest-document-generator-branded.html`. Node serves it at `/`.
 
 ## Run Locally
 
-No dependencies or build step are required.
-
-From this folder, start a static server:
+Install dependencies and start the server:
 
 ```bash
-python -m http.server 8080
+npm install
+npm start
 ```
 
 Then open:
 
 ```text
-http://localhost:8080/beforest-document-generator-branded.html
+http://localhost:3000
+```
+
+Health check:
+
+```text
+http://localhost:3000/healthz
+```
+
+## Deploy to Coolify
+
+Use this repo as a Node.js app or Docker app.
+
+Recommended Coolify settings:
+
+```text
+Build pack: Nixpacks or Dockerfile
+Start command: npm start
+Port: 3000
+Health check path: /healthz
 ```
 
 ## External Assets and Services
