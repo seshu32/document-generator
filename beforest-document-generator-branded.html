@@ -84,6 +84,7 @@ button:hover{background:var(--offwhite);border-color:var(--line-strong)}
 .htag-invoice{background:rgba(176,221,241,.45);color:var(--night)}
 .htag-mou{background:rgba(184,220,153,.42);color:var(--forest)}
 .htag-eoi{background:rgba(255,119,74,.14);color:var(--terracotta)}
+.htag-receipt{background:rgba(134,49,43,.12);color:var(--terracotta)}
 .doc{font-family:'ABC Arizona Flare Sans','Beforest Arizona Sans','ABC Arizona Flare',Arial,sans-serif;color:var(--earth);padding:42px 46px;position:relative;overflow:hidden;background:var(--offwhite);max-width:100%}
 .doc strong,.doc b{font-family:'ABC Arizona Flare Sans','Beforest Arizona Sans',Arial,sans-serif;font-weight:600;color:inherit}
 .doc em{font-family:'ABC Arizona Flare','Times New Roman',serif;font-style:italic}
@@ -158,6 +159,20 @@ button:hover{background:var(--offwhite);border-color:var(--line-strong)}
 .payment-table th:nth-child(4),.payment-table td:nth-child(4){width:20%;text-align:center}
 .eoi-tc{font-size:11px;color:var(--charcoal);line-height:1.7;margin-bottom:12px}
 .eoi-tc h4{font-size:10px;font-weight:500;color:var(--earth);margin-bottom:4px}
+.receipt-doc{font-family:Arial,sans-serif;color:#111;padding-top:12px}
+.receipt-entity{text-align:center;font-size:25px;font-weight:700;text-decoration:underline;text-underline-offset:5px;margin:34px 0 34px;text-transform:uppercase}
+.receipt-meta{font-size:12px;font-weight:600;line-height:1.75;margin-bottom:20px}
+.receipt-client{font-size:13px;line-height:1.55;margin-bottom:20px}
+.receipt-title{text-align:center;font-size:14px;font-weight:700;margin:16px 0}
+.receipt-table{width:100%;border-collapse:collapse;font-size:12px}
+.receipt-table th,.receipt-table td{border:1px solid #222;padding:10px;vertical-align:top}
+.receipt-table th{text-align:center;font-weight:700}
+.receipt-table .receipt-main-row td{height:170px}
+.receipt-particulars{line-height:1.65}
+.receipt-amount{text-align:center;font-weight:700;white-space:nowrap}
+.receipt-words{font-size:12px;margin:30px 0 44px}
+.receipt-signoff{font-size:12px;line-height:1.8;margin-bottom:90px}
+.receipt-footer{border-top:3px solid var(--terracotta);padding-top:7px;text-align:center;font-family:'ABC Arizona Flare',serif;font-size:11px;line-height:1.55;color:#111}
 .doc-footer{margin-top:28px;padding-top:12px;border-top:1px solid var(--line);font-size:9px;color:var(--charcoal);text-align:center;line-height:1.8;letter-spacing:.04em}
 .autofill-toast{position:fixed;right:22px;bottom:22px;z-index:50;max-width:360px;background:var(--earth);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:12px 14px;box-shadow:0 18px 40px rgba(52,46,41,.25);font-size:11px;line-height:1.55;opacity:0;transform:translateY(12px);pointer-events:none;transition:opacity .18s,transform .18s}
 .autofill-toast.show{opacity:1;transform:translateY(0)}
@@ -196,7 +211,7 @@ button:hover{background:var(--offwhite);border-color:var(--line-strong)}
 <div class="topbar">
   <div>
     <div style="font-size:14px;font-weight:400;color:#fff;font-family:'ABC Arizona Flare',serif;letter-spacing:.04em">Beforest - Document Generator</div>
-    <div style="font-size:10px;color:rgba(255,255,255,.45);margin-top:1px;letter-spacing:.08em;text-transform:uppercase">Tax Invoice | MoU | EOI & Service Agreement</div>
+    <div style="font-size:10px;color:rgba(255,255,255,.45);margin-top:1px;letter-spacing:.08em;text-transform:uppercase">Tax Invoice | MoU | EOI & Service Agreement | Receipt Voucher</div>
   </div>
   <div style="display:flex;gap:8px">
     <button class="btn-ghost" onclick="printDoc()"><span class="desktop-label">Print / Save PDF</span><span class="mobile-label">PDF</span></button>
@@ -210,6 +225,7 @@ button:hover{background:var(--offwhite);border-color:var(--line-strong)}
     <div class="tab active" onclick="switchTab('invoice',this)">Invoice</div>
     <div class="tab" onclick="switchTab('mou',this)">MoU</div>
     <div class="tab" onclick="switchTab('eoi',this)">EOI</div>
+    <div class="tab" onclick="switchTab('receipt',this)">Receipts</div>
   </div>
   <div id="user-guide" class="smart-guide" aria-live="polite"></div>
   <div id="save-feedback" class="save-feedback" aria-live="polite"></div>
@@ -225,7 +241,6 @@ button:hover{background:var(--offwhite);border-color:var(--line-strong)}
         <option value="default" selected>Beforest Lifestyle Solutions</option>
         <option value="poomaale1">Poomaale Collective 1.0</option>
         <option value="poomaale2">Poomaale Collective 2.0</option>
-        <option value="hyderabad">Hyderabad Collective</option>
         <option value="mumbai">Mumbai Collective</option>
         <option value="hammiyala">Hammiyala Collective</option>
         <option value="bhopal">Bhopal Collective</option>
@@ -519,6 +534,57 @@ button:hover{background:var(--offwhite);border-color:var(--line-strong)}
     </div>
   </div>
 
+  <!-- RECEIPT FORM -->
+  <div id="form-receipt" style="display:none">
+    <div class="form-band">
+      <div class="sec-head">Quick setup</div>
+      <div class="sec-note">Select the collective to fill its receipt entity and footer details.</div>
+      <div class="ff"><div class="lbl">Collective/entity preset</div>
+        <select id="r-preset" onchange="applyReceiptPreset()">
+          <option value="default" selected>Beforest / Durgamcheruvu</option>
+          <option value="poomaale1">Poomaale Collective 1.0</option>
+          <option value="poomaale2">Poomaale Collective 2.0</option>
+          <option value="hammiyala">Hammiyala Collective</option>
+          <option value="mumbai">Mumbai Collective</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-band">
+      <div class="sec-head">Receipt details</div>
+      <div class="fr">
+        <div class="ff"><div class="lbl">Receipt date</div><input type="date" id="r-date" oninput="render()"/></div>
+        <div class="ff"><div class="lbl">Voucher number</div><input id="r-num" placeholder="59" oninput="render()"/></div>
+      </div>
+    </div>
+    <hr class="div"/>
+    <div class="form-band">
+      <div class="sec-head">Client details</div>
+      <div class="field-hint">Enter the member name first to generate the receipt preview.</div>
+      <div class="ff"><div class="lbl">Client/member name</div><input id="r-name" placeholder="Ratna Usha Kiran Badireddi" oninput="render()"/></div>
+      <div class="ff"><div class="lbl">Complete address</div><textarea id="r-addr" rows="4" placeholder="Residential address" oninput="render()"></textarea></div>
+    </div>
+    <hr class="div"/>
+    <div class="form-band">
+      <div class="sec-head">Payment details</div>
+      <div class="ff"><div class="lbl">Amount received (Rs.)</div><input id="r-amount" type="text" inputmode="decimal" placeholder="1,20,000" oninput="render()"/></div>
+      <div class="ff"><div class="lbl">Towards</div><textarea id="r-towards" rows="3" placeholder="Working capital for day-to-day expenses..." oninput="render()"></textarea></div>
+      <div class="fr">
+        <div class="ff"><div class="lbl">Mode of payment</div>
+          <select id="r-mode" onchange="render()">
+            <option value="NEFT">NEFT</option>
+            <option value="RTGS">RTGS</option>
+            <option value="Cheque">Cheque</option>
+            <option value="Demand Draft">Demand Draft</option>
+            <option value="UPI">UPI</option>
+            <option value="Cash">Cash</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="ff"><div class="lbl">Instrument/payment date</div><input type="date" id="r-instrument" oninput="render()"/></div>
+      </div>
+    </div>
+  </div>
+
   <hr class="div"/>
   <div>
     <div class="lbl" style="margin-bottom:8px">Saved</div>
@@ -676,6 +742,135 @@ const COLLECTIVE_PRESETS = {
   }
 };
 
+const INVOICE_PRESETS = {
+  default:{
+    name:"Beforest Lifestyle Solutions Pvt. Ltd.",
+    addr:"Plot No 521, Road No.27, Venkatagiri, Jubilee Hills, Hyderabad, Telangana-500033",
+    gstin:"36AAHCB8928N1ZZ",
+    email:"finance@beforest.co",
+    placeOfSupply:"Telangana (36)"
+  },
+  poomaale1:{
+    name:"Beforest Lifestyle Solutions Pvt. Ltd.",
+    addr:"C 208, SJR REDWOODS, HARALUR ROAD, SARJAPURA ROAD, AMBALIPURA, BANGALURU URBAN KARNATAKA-560102",
+    gstin:"29AAHCB8928N1ZU",
+    email:"finance@beforest.co",
+    placeOfSupply:"Karnataka (29)"
+  },
+  poomaale2:{
+    name:"Beforest Lifestyle Solutions Pvt. Ltd.",
+    addr:"C 208, SJR REDWOODS, HARALUR ROAD, SARJAPURA ROAD, AMBALIPURA, BANGALURU URBAN KARNATAKA-560102",
+    gstin:"29AAHCB8928N1ZU",
+    email:"finance@beforest.co",
+    placeOfSupply:"Karnataka (29)"
+  },
+  hammiyala:{
+    name:"Beforest Lifestyle Solutions Pvt. Ltd.",
+    addr:"C 208, SJR REDWOODS, HARALUR ROAD, SARJAPURA ROAD, AMBALIPURA, BANGALURU URBAN KARNATAKA-560102",
+    gstin:"29AAHCB8928N1ZU",
+    email:"finance@beforest.co",
+    placeOfSupply:"Karnataka (29)"
+  },
+  mumbai:{
+    name:"Beforest Lifestyle Solutions Pvt. Ltd.",
+    addr:"Flat No.501, Sy No.62, Hissa No.3A, The Retreat Durshet Co-op Housing Society, Durshet, Taluka Khalapur, Khopoli, Raigad, Maharashtra-410203",
+    gstin:"27AAHCB8928N1ZY",
+    email:"finance@beforest.co",
+    placeOfSupply:"Maharashtra (27)"
+  },
+  bhopal:{
+    name:"Beforest Lifestyle Solutions Pvt. Ltd.",
+    addr:"Plot No 521, Road No.27, Venkatagiri, Jubilee Hills, Hyderabad, Telangana-500033",
+    gstin:"36AAHCB8928N1ZZ",
+    email:"finance@beforest.co",
+    placeOfSupply:"Telangana (36)"
+  }
+};
+
+const EOI_PAYMENT_PRESETS = {
+  default:{
+    name:"Durgamcheruvu Collective LLP",
+    bank:"ICICI Bank, Banjara Hills Road No. 14",
+    acc:"236505001837",
+    ifsc:"ICIC0002365"
+  },
+  hyderabad:{
+    name:"Durgamcheruvu Collective LLP",
+    bank:"ICICI Bank, Banjara Hills Road No. 14",
+    acc:"236505001837",
+    ifsc:"ICIC0002365"
+  },
+  poomaale1:{
+    name:"POOMAALE ESTATE LLP",
+    bank:"ICICI Bank, Banjara Hills Road No. 14",
+    acc:"236505001676",
+    ifsc:"ICIC0002365"
+  },
+  poomaale2:{
+    name:"ONAPAKSHI LLP",
+    bank:"ICICI Bank, Banjara Hills Road No. 14",
+    acc:"236505500611",
+    ifsc:"ICIC0002365"
+  },
+  hammiyala:{
+    name:"HAMMIYALA ESTATE LLP",
+    bank:"State Bank of India, Venkatagiri Branch, Jubilee Hills",
+    acc:"00000042913280761",
+    ifsc:"SBIN0022018"
+  },
+  mumbai:{
+    name:"Beforest Life Style Solutions Pvt. Ltd.",
+    bank:"ICICI Bank",
+    acc:"236505001587",
+    ifsc:"ICIC0002365"
+  },
+  bhopal:{
+    name:"THE BHOPAL COLLECTIVE PRIVATE LIMITED",
+    bank:"ICICI Bank",
+    acc:"2365 0500 1119",
+    ifsc:"ICIC0002365"
+  }
+};
+
+const RECEIPT_PRESETS = {
+  default:{
+    name:"Durgam Cheruvu Collective LLP",
+    addr:"8-3-678/49, Plot No.49, Pragathi Nagar Colony, Yousufguda, Hyderabad-45",
+    pan:"AASFD8467E",
+    registrationLabel:"LLP Incorporation Number",
+    registration:"AAY-2881"
+  },
+  poomaale1:{
+    name:"Poomaale Estate LLP",
+    addr:"Plot No.49, 8-3-678/49, Pragathi Nagar Colony, Yousufguda, Hyderabad, Telangana, India-500045",
+    pan:"ABAFP1941L",
+    registrationLabel:"LLP Incorporation Number",
+    registration:"AAW-2437"
+  },
+  poomaale2:{
+    name:"Onapakshi LLP",
+    addr:"1, Naladi, Kakkabe, Kodagu, Karada, Virajpet, Kodagu-571212, Karnataka, India",
+    pan:"AAIFO5844J",
+    registrationLabel:"LLP Incorporation Number",
+    registration:"ACC-0581"
+  },
+  hammiyala:{
+    name:"Hammiyala Estate LLP",
+    addr:"22, Hammiyala, Hattihole, Hattihole Police Station, Somvarpet, Kodagu-571251, Karnataka, India",
+    pan:"AAQFH9628H",
+    registrationLabel:"LLP Incorporation Number",
+    registration:"ACG-4431"
+  },
+  mumbai:{
+    name:"Beforest Lifestyle Solutions Pvt. Ltd.",
+    addr:"Plot No 521, Road No.27, Venkatagiri, Jubilee Hills, Hyderabad, Telangana-500033",
+    pan:"AAHCB8928N",
+    registrationLabel:"CIN",
+    registration:"U01111TG2018PTC125218"
+  }
+};
+const RECEIPT_CONTACT={phone:"+91-7396044482",email:"crm@beforest.co",web:"www.beforest.co"};
+
 const WM = `<div class="doc-wm" style="top:-30px;right:-50px;width:320px;height:380px"><svg viewBox="0 0 300 360" xmlns="http://www.w3.org/2000/svg"><ellipse cx="180" cy="150" rx="130" ry="200" transform="rotate(-20 180 150)"/><ellipse cx="120" cy="200" rx="90" ry="150" transform="rotate(15 120 200)"/></svg></div><div class="doc-wm" style="bottom:-50px;left:-30px;width:220px;height:260px;opacity:.03;transform:rotate(180deg)"><svg viewBox="0 0 300 360" xmlns="http://www.w3.org/2000/svg"><ellipse cx="180" cy="150" rx="130" ry="200" transform="rotate(-20 180 150)"/><ellipse cx="120" cy="200" rx="90" ry="150" transform="rotate(15 120 200)"/></svg></div>`;
 const LOGO_URL = 'https://i.ibb.co/Xr9S2Tk4/23-Beforest-Black-with-Tagline.png';
 const LOGO_HTML = `<div class="dh-logo-wrap"><img src="${LOGO_URL}" class="dh-logo" alt="Beforest - Nature at Work"/></div>`;
@@ -688,6 +883,7 @@ function fdateOrText(val){return /^\d{4}-\d{2}-\d{2}$/.test(val)?fd(val):val;}
 function fa(val){const n=parseFloat(val);if(isNaN(n))return'-';return'Rs.'+n.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});}
 function fan(val){const n=parseFloat(val);if(isNaN(n))return'-';return'Rs.'+n.toLocaleString('en-IN');}
 function numOr(val,fallback){const n=parseFloat(val);return Number.isFinite(n)?n:fallback;}
+function receiptAmount(val){const n=parseFloat(String(val||'').replace(/[₹,\s]/g,''));return Number.isFinite(n)?n:0;}
 function v(id){const e=document.getElementById(id);return e?e.value:'';}
 function setVal(id,val){const e=document.getElementById(id);if(e)e.value=val||'';}
 const REQUIRED_FIELDS={
@@ -707,12 +903,18 @@ const REQUIRED_FIELDS={
     ['e-phone','Phone'],
     ['e-email','Email'],
     ['e-book','Booking amount']
+  ],
+  receipt:[
+    ['r-name','Client/member name'],
+    ['r-amount','Amount received'],
+    ['r-num','Voucher number']
   ]
 };
 const GUIDE_COPY={
   invoice:{title:'Invoice checklist',next:'Fill buyer name, rate and quantity. Preview updates on the right.'},
   mou:{title:'MoU checklist',next:'Fill member details first, then land and financials.'},
-  eoi:{title:'EOI checklist',next:'Fill applicant details first, then pricing.'}
+  eoi:{title:'EOI checklist',next:'Fill applicant details first, then pricing.'},
+  receipt:{title:'Receipt checklist',next:'Fill the client name, amount and voucher number.'}
 };
 function markRequiredFields(){
   Object.values(REQUIRED_FIELDS).flat().forEach(([id])=>{
@@ -797,14 +999,23 @@ function applyCollectivePreset(prefix){
     setVal(prefix+'-gst','18');
   }
   if(prefix==='i'){
-    if(['mumbai','hammiyala'].includes(selected)){
-      setVal('i-co-name',preset.collective);
+    const invoicePreset=INVOICE_PRESETS[selected];
+    if(invoicePreset){
+      setVal('i-co-name',invoicePreset.name);
+      setVal('i-co-addr',invoicePreset.addr);
+      setVal('i-co-gstin',invoicePreset.gstin);
+      setVal('i-co-email',invoicePreset.email);
+      setVal('i-pos',invoicePreset.placeOfSupply);
     }
-    setVal('i-pos',preset.placeOfSupply);
     setVal('i-desc',preset.product);
   }
   if(prefix==='m'){
     const beforest=COLLECTIVE_PRESETS.default;
+    const operationalExpenditureUntil={
+      poomaale2:'March 2033',
+      hammiyala:'March 2034',
+      mumbai:'June 2033'
+    }[selected]||'June 2033';
     if(selected!=='default'){
       setVal('m-coll',preset.collective);
       setVal('m-estate',preset.estate);
@@ -816,6 +1027,7 @@ function applyCollectivePreset(prefix){
     setVal('m-co-bank',beforest.bank);
     setVal('m-co-acc',beforest.acc);
     setVal('m-co-ifsc',beforest.ifsc);
+    setVal('m-inclusions',`GST, Registration, Stamp Duty, Operational Expenditure till ${operationalExpenditureUntil} and all other charges related to land registration and transfer`);
   }
   if(prefix==='e'){
     const beforest=COLLECTIVE_PRESETS.default;
@@ -838,6 +1050,15 @@ function applyCollectivePreset(prefix){
   ]);
   render();
 }
+function applyReceiptPreset(){
+  const preset=RECEIPT_PRESETS[v('r-preset')];
+  if(preset)showAutofillToast({collective:preset.name},[
+    `Entity: ${preset.name}`,
+    `Address: ${preset.addr}`,
+    `${preset.registrationLabel}: ${preset.registration}`
+  ]);
+  render();
+}
 function entity(prefix){
   const selected=v(prefix+'-preset');
   const selectedPreset=COLLECTIVE_PRESETS[selected];
@@ -856,7 +1077,7 @@ function entity(prefix){
 
 function switchTab(tab,el){
   currentTab=tab;
-  ['invoice','mou','eoi'].forEach(t=>{document.getElementById('form-'+t).style.display=t===tab?'block':'none';});
+  ['invoice','mou','eoi','receipt'].forEach(t=>{document.getElementById('form-'+t).style.display=t===tab?'block':'none';});
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
   setSaveFeedback('', '');
@@ -870,7 +1091,8 @@ function render(){
   let html='';
   if(currentTab==='invoice') html=buildInvoice();
   else if(currentTab==='mou') html=buildMoU();
-  else html=buildEOI();
+  else if(currentTab==='eoi') html=buildEOI();
+  else html=buildReceipt();
   updateUserGuide();
   if(!html){empty.style.display='flex';content.style.display='none';return;}
   empty.style.display='none';content.style.display='block';content.innerHTML=html;
@@ -915,7 +1137,7 @@ function buildInvoice(){
     </div>
   </div>
   <div class="meta-band meta-band-4" style="margin-bottom:0">
-    <div class="mc"><div class="mc-l">#</div><div class="mc-v" style="font-size:11px">${num}</div></div>
+    <div class="mc"><div class="mc-l">Inv.No</div><div class="mc-v" style="font-size:11px">${num}</div></div>
     <div class="mc"><div class="mc-l">Invoice date</div><div class="mc-v" style="font-size:11px">${idate}</div></div>
     <div class="mc"><div class="mc-l">Due date</div><div class="mc-v" style="font-size:11px">${due}</div></div>
     <div class="mc"><div class="mc-l">Place of supply</div><div class="mc-v" style="font-size:11px">${pos}</div></div>
@@ -958,7 +1180,7 @@ function buildInvoice(){
       </div>
     </div>
   </div>
-  <div class="doc-footer">${ent.name} | ${CO.web} | ${ent.email} | CIN: ${CO.cin}</div>
+  <div class="doc-footer">${ent.name} | ${CO.web} | finance@beforest.co | CIN: ${CO.cin}</div>
 </div></div>`;
 }
 
@@ -1025,7 +1247,7 @@ function buildMoU(){
     ${LOGO_HTML}
     <div class="dh-right">
       <div class="dh-doctype" style="font-size:16px">MEMORANDUM OF UNDERSTANDING</div>
-      <div class="dh-co"><strong>${ent.name}</strong><br>CIN: ${CO.cin}<br>GSTIN ${ent.gstin}</div>
+      <div class="dh-co"><strong>${ent.name}</strong><br>CIN: ${CO.cin}<br>GSTIN 36AAHCB8928N1ZZ</div>
     </div>
   </div>
 
@@ -1126,7 +1348,7 @@ function buildMoU(){
     </div>
     ${secondSignatureHtml}
   </div>
-  <div class="doc-footer">${ent.name} | ${CO.web} | ${CO.email} | CIN: ${CO.cin}</div>
+  <div class="doc-footer">${ent.name} | ${CO.web} | finance@beforest.co | CIN: ${CO.cin}</div>
 </div></div>`;
 }
 
@@ -1135,7 +1357,18 @@ function buildEOI(){
   const name=v('e-name');if(!name.trim())return'';
   const ent=entity('e');
   const selectedPreset=v('e-preset');
+  const paymentDetails=EOI_PAYMENT_PRESETS[selectedPreset]||{
+    name:ent.name,
+    bank:ent.bank,
+    acc:ent.acc,
+    ifsc:ent.ifsc
+  };
   const hideStampDutyNote=['poomaale1','hyderabad'].includes(selectedPreset);
+  const operationalExpenditureUntil={
+    poomaale2:'March 2033',
+    hammiyala:'March 2034',
+    mumbai:'June 2033'
+  }[selectedPreset]||'June 2033';
   const coll=v('e-coll')||'The Collective';
   const product=v('e-product')||'2.5 Acres';
   const llp=v('e-llp')||'LLP';
@@ -1181,7 +1414,7 @@ function buildEOI(){
     ${LOGO_HTML}
     <div class="dh-right">
       <div class="dh-doctype" style="font-size:15px">EXPRESSION OF INTEREST<br>&amp; SERVICE AGREEMENT</div>
-      <div class="dh-co"><strong>${ent.name}</strong><br>${ent.addr}<br>GSTIN ${ent.gstin}</div>
+      <div class="dh-co"><strong>${ent.name}</strong><br>${ent.addr}<br>CIN: ${CO.cin}<br>GSTIN 36AAHCB8928N1ZZ</div>
     </div>
   </div>
 
@@ -1236,7 +1469,7 @@ function buildEOI(){
       <tr style="font-weight:600"><td>4</td><td>Net Cost to Applicant **</td><td style="text-align:right">${fan(netCost)}</td><td></td></tr>
     </tbody>
   </table>
-  ${hideStampDutyNote?'':'<div style="font-size:10px;color:var(--charcoal);margin-bottom:10px">** Including Stamp duty, Registration Charges, Maintenance and Operational Expenditure till June 2033, where applicable.</div>'}
+  ${hideStampDutyNote?'':`<div style="font-size:10px;color:var(--charcoal);margin-bottom:10px">** Including Stamp duty, Registration Charges, Maintenance and Operational Expenditure till ${operationalExpenditureUntil}, where applicable.</div>`}
 
   <div class="eoi-section-head">D. Payment Instalments</div>
   <table class="eoi-pricing-table payment-table">
@@ -1250,7 +1483,7 @@ function buildEOI(){
     <h4>1. Nature of Booking</h4>
     This is a provisional booking and does not convey in favour of Applicant(s) any right, title or interest of whatsoever nature, unless and until required documents such as the MoU are executed and the total price of the unit as per the payment plan opted by the Applicant(s) has been completed.
     <h4 style="margin-top:8px">2. Mode of Payment</h4>
-    All payments shall be made through Demand Draft / Cheque / NEFT / RTGS in favour of <strong>${ent.name}</strong>, land seller, or as directed by the Company from time to time. Bank details: <strong>${ent.bank}</strong>, A/C: <strong>${ent.acc}</strong>, IFSC: <strong>${ent.ifsc}</strong>. The Company shall not be held liable or responsible for any payment made to any agent, broker or third person unless specifically directed by the Company.
+    All payments shall be made through Demand Draft / Cheque / NEFT / RTGS in favour of <strong>${paymentDetails.name}</strong>, land seller, or as directed by the Company from time to time. Bank details: <strong>${paymentDetails.bank}</strong>, A/C: <strong>${paymentDetails.acc}</strong>, IFSC: <strong>${paymentDetails.ifsc}</strong>. The Company shall not be held liable or responsible for any payment made to any agent, broker or third person unless specifically directed by the Company.
     <h4 style="margin-top:8px">3. Delayed Payments</h4>
     In case of delayed payment of instalments or any other dues by the Applicant(s), interest at the rate of MCLR of ICICI Bank + 5% per annum may be charged for the period of delay. Non-payment for more than 2 months may result in cancellation of booking.
     <h4 style="margin-top:8px">4. Cancellation Charges</h4>
@@ -1313,8 +1546,51 @@ function buildEOI(){
     </div>
   </div>
 
-  <div class="doc-footer">${ent.name} | ${CO.web} | ${CO.email} | CIN: ${CO.cin}</div>
+  <div class="doc-footer">${ent.name} | ${CO.web} | finance@beforest.co | CIN: ${CO.cin}</div>
 </div></div>`;
+}
+
+/* Receipt */
+function buildReceipt(){
+  const name=v('r-name');if(!name.trim())return'';
+  const preset=RECEIPT_PRESETS[v('r-preset')]||RECEIPT_PRESETS.default;
+  const amount=receiptAmount(v('r-amount'));
+  const amountDisplay=amount.toLocaleString('en-IN',{maximumFractionDigits:2})+'/-';
+  const address=(v('r-addr')||'-').replace(/\n/g,'<br>');
+  const mode=v('r-mode')||'NEFT';
+  const towards=v('r-towards')||`working capital for day-to-day expenses in ${preset.name}.`;
+  function receiptDate(value){
+    if(!value)return'-';
+    const [year,month,day]=value.split('-');
+    return `${day}.${month}.${year}`;
+  }
+  function receiptWords(n){
+    const a=['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
+    const b=['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
+    function t(value){if(value<20)return a[value];if(value<100)return b[Math.floor(value/10)]+(value%10?' '+a[value%10]:'');if(value<1000)return a[Math.floor(value/100)]+' Hundred'+(value%100?' '+t(value%100):'');if(value<100000)return t(Math.floor(value/1000))+' Thousand'+(value%1000?' '+t(value%1000):'');if(value<10000000)return t(Math.floor(value/100000))+' Lakh'+(value%100000?' '+t(value%100000):'');return t(Math.floor(value/10000000))+' Crore'+(value%10000000?' '+t(value%10000000):'');}
+    return n===0?'Zero':t(Math.round(n));
+  }
+  const panText=preset.pan?`PAN - ${preset.pan}. `:'';
+  return `<div class="doc receipt-doc"><div class="doc-c">
+    <div class="receipt-entity">${preset.name}</div>
+    <div class="receipt-meta">Date: ${receiptDate(v('r-date'))}<br><br>Voucher No. ${v('r-num')||'-'}</div>
+    <div class="receipt-client"><strong>Client Detail</strong><br><strong>${name},</strong><br>${address}</div>
+    <div class="receipt-title">RECEIPT VOUCHER</div>
+    <table class="receipt-table">
+      <thead><tr><th style="width:9%">Sl. No</th><th>Particulars</th><th style="width:21%">Amount (Rs.)</th></tr></thead>
+      <tbody>
+        <tr class="receipt-main-row">
+          <td style="text-align:center;font-weight:700">1.</td>
+          <td class="receipt-particulars"><strong>Received From ${name}</strong><br><br><strong>Towards:</strong> ${towards}<br><br><strong>Mode of Payment:</strong> ${mode}<br><br><strong>Date of Instrument:</strong> ${receiptDate(v('r-instrument'))}</td>
+          <td class="receipt-amount">${amountDisplay}</td>
+        </tr>
+        <tr><td></td><td style="text-align:center">Total Amount</td><td class="receipt-amount">${amountDisplay}</td></tr>
+      </tbody>
+    </table>
+    <div class="receipt-words"><strong>Figure in Words:</strong> Rupees ${receiptWords(amount)} Only/-</div>
+    <div class="receipt-signoff">For ${preset.name}<br><br><br><br>Digital copy</div>
+    <div class="receipt-footer">Office Address: - ${preset.addr}<br>Phone: - ${RECEIPT_CONTACT.phone}; Email: - ${RECEIPT_CONTACT.email}; Website: - ${RECEIPT_CONTACT.web}<br>${panText}${preset.registrationLabel} - ${preset.registration}</div>
+  </div></div>`;
 }
 
 /* Helpers */
@@ -1415,7 +1691,7 @@ body{background:#fdfbf7;margin:0;padding:24px}
 </html>`;
 }
 async function sheetPayload(record){
-  const prefix=currentTab==='invoice'?'i':currentTab==='mou'?'m':'e';
+  const prefix=currentTab==='invoice'?'i':currentTab==='mou'?'m':currentTab==='eoi'?'e':'r';
   const fields=formValues(prefix);
   const sheetType=currentTab==='mou'?'mou':currentTab;
   const payload={
@@ -1449,7 +1725,7 @@ async function sheetPayload(record){
     payload.balance=fields['m-bal-fig']||'';
     payload.plot_or_unit=fields['m-plot']||'';
     payload.payment_rows_json=JSON.stringify(collectPaymentRows('#pay-rows .pay-row'));
-  }else{
+  }else if(currentTab==='eoi'){
     const book=numOr(fields['e-book'],0);
     const gst=numOr(fields['e-gst'],0);
     const llp=numOr(fields['e-llpamt'],0);
@@ -1460,6 +1736,16 @@ async function sheetPayload(record){
     payload.primary_phone=fields['e-phone']||'';
     payload.primary_email=fields['e-email']||'';
     payload.payment_rows_json=JSON.stringify(collectPaymentRows('#eoi-pay-rows .eoi-pay-row'));
+  }else{
+    const receiptPreset=RECEIPT_PRESETS[fields['r-preset']]||RECEIPT_PRESETS.default;
+    payload.collective=receiptPreset.name;
+    payload.entity_name=receiptPreset.name;
+    payload.member_name=fields['r-name']||'';
+    payload.amount=String(receiptAmount(fields['r-amount']));
+    payload.receipt_date=fields['r-date']||'';
+    payload.instrument_date=fields['r-instrument']||'';
+    payload.payment_mode=fields['r-mode']||'';
+    payload.payment_purpose=fields['r-towards']||'';
   }
   return safeSheetPayload(payload);
 }
@@ -1491,7 +1777,8 @@ async function saveToHistory(){
   let name='',num='';
   if(currentTab==='invoice'){name=v('i-bname');num=v('i-num')||'INV';}
   else if(currentTab==='mou'){name=v('m-fname');num='MOU';}
-  else{name=v('e-name');num='EOI';}
+  else if(currentTab==='eoi'){name=v('e-name');num='EOI';}
+  else{name=v('r-name');num=v('r-num')||'RECEIPT';}
   if(!name.trim()){alert('Fill in member name first.');return;}
   const hist=loadHist();
   const record={id:Date.now(),tab:currentTab,name,num,date:new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}),html:c.innerHTML};
@@ -1526,6 +1813,7 @@ document.addEventListener('click',e=>{
 document.querySelectorAll('input[type=date]').forEach(el=>{el.value=new Date().toISOString().slice(0,10);});
 normalizePayRows();
 ['i','m','e'].forEach(prefix=>applyCollectivePreset(prefix));
+applyReceiptPreset();
 markRequiredFields();
 initSheetSync();
 renderHist();render();
