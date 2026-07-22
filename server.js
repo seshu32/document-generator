@@ -6,6 +6,7 @@ const path = require("node:path");
 const PORT = Number(process.env.PORT || 3000);
 const HOST = process.env.HOST || "0.0.0.0";
 const APP_FILE = path.join(__dirname, "beforest-document-generator-branded.html");
+const LOGIN_HERO_FILE = path.join(__dirname, "assets", "conservation-1.jpg");
 const APP_PASSWORD = process.env.APP_PASSWORD || "";
 const SESSION_SECRET = process.env.SESSION_SECRET || APP_PASSWORD || crypto.randomBytes(32).toString("hex");
 const SHEET_WEBAPP_URL = process.env.SHEET_WEBAPP_URL || "";
@@ -103,27 +104,86 @@ function loginPage(error = "") {
   <title>Beforest Document Generator - Login</title>
   <style>
     *{box-sizing:border-box}
-    body{margin:0;min-height:100vh;display:grid;place-items:center;background:#fdfbf7;color:#342e29;font-family:Arial,sans-serif}
-    main{width:min(360px,calc(100vw - 32px));border:1px solid rgba(52,46,41,.18);background:#fff;padding:24px;border-radius:8px}
-    h1{font-size:20px;margin:0 0 6px;font-weight:600}
-    p{font-size:13px;line-height:1.5;color:#51514d;margin:0 0 18px}
-    label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:#86312b;margin-bottom:6px}
-    input{width:100%;border:1px solid rgba(52,46,41,.2);border-radius:6px;padding:11px 12px;font-size:15px}
-    button{width:100%;margin-top:14px;border:0;border-radius:4px;background:#344736;color:#fff;padding:11px 14px;font-size:13px;text-transform:uppercase;letter-spacing:.12em;cursor:pointer}
-    .error{background:rgba(255,119,74,.1);border:1px solid rgba(134,49,43,.25);color:#86312b;padding:9px 10px;border-radius:6px;margin-bottom:14px;font-size:12px}
+    :root{color-scheme:light;--forest:#344736;--forest-dark:#26382a;--ink:#292724;--muted:#6f6b64;--line:#ddd9d1;--paper:#fbfaf6;--clay:#9a4b3e}
+    body{margin:0;min-height:100vh;display:grid;place-items:center;padding:28px;background:#f2f0ea;color:var(--ink);font-family:Arial,Helvetica,sans-serif}
+    main{width:min(1180px,100%);height:min(760px,calc(100vh - 56px));display:grid;grid-template-columns:minmax(390px,43%) 1fr;overflow:hidden;background:var(--paper);border:1px solid rgba(52,71,54,.1);border-radius:26px;box-shadow:0 28px 80px rgba(41,39,36,.12)}
+    .login-panel{display:flex;align-items:center;padding:44px clamp(42px,6vw,84px);background:var(--paper)}
+    .login-content{width:100%;max-width:390px;margin:auto}
+    .brand{display:block;width:min(255px,78%);height:auto;margin:0 0 46px}
+    .eyebrow{margin:0 0 16px;color:var(--clay);font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase}
+    h1{max-width:360px;margin:0 0 16px;font-family:Georgia,'Times New Roman',serif;font-size:clamp(36px,3.4vw,52px);font-weight:400;line-height:1.04;letter-spacing:-.035em;color:var(--ink)}
+    .intro{max-width:340px;margin:0 0 38px;color:var(--muted);font-size:15px;line-height:1.7}
+    label{display:block;margin-bottom:9px;color:#514e48;font-size:11px;font-weight:700;letter-spacing:.13em;text-transform:uppercase}
+    .password-wrap{position:relative}
+    input{width:100%;height:58px;border:1px solid var(--line);border-radius:12px;padding:0 76px 0 17px;background:#fff;color:var(--ink);font-size:17px;outline:none;transition:border-color .2s,box-shadow .2s}
+    input:focus{border-color:#718274;box-shadow:0 0 0 4px rgba(52,71,54,.1)}
+    .toggle{position:absolute;top:50%;right:10px;width:auto;margin:0;transform:translateY(-50%);border:0;border-radius:8px;padding:9px 10px;background:transparent;color:var(--forest);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+    .toggle:hover{background:#f0f2ed}
+    .submit{width:100%;height:56px;margin-top:18px;border:0;border-radius:12px;background:var(--forest);color:#fff;font-size:12px;font-weight:700;letter-spacing:.17em;text-transform:uppercase;cursor:pointer;transition:background .2s,transform .2s,box-shadow .2s}
+    .submit:hover{background:var(--forest-dark);box-shadow:0 12px 24px rgba(52,71,54,.18);transform:translateY(-1px)}
+    .submit:active{transform:translateY(0)}
+    .error{margin:0 0 18px;border:1px solid rgba(154,75,62,.25);border-radius:10px;padding:11px 13px;background:rgba(154,75,62,.08);color:#813c32;font-size:13px;line-height:1.4}
+    .hero{position:relative;height:100%;overflow:hidden;background:#203627}
+    .hero img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
+    @media(max-height:700px) and (min-width:781px){
+      body{padding:18px}
+      main{height:calc(100vh - 36px)}
+      .login-panel{padding:24px clamp(34px,5vw,68px)}
+      .brand{width:min(210px,70%);margin-bottom:24px}
+      .eyebrow{margin-bottom:10px;font-size:10px}
+      h1{margin-bottom:12px;font-size:clamp(34px,3vw,42px);line-height:1}
+      .intro{margin-bottom:18px;font-size:13px;line-height:1.5}
+      label{margin-bottom:7px;font-size:10px}
+      input{height:48px;font-size:15px}
+      .submit{height:48px;margin-top:12px}
+      .error{margin-bottom:10px;padding:8px 11px}
+    }
+    @media(max-width:780px){
+      body{padding:0;background:var(--paper)}
+      main{display:block;width:100%;height:auto;min-height:100vh;border:0;border-radius:0;box-shadow:none}
+      .login-panel{min-height:100vh;padding:42px 26px}
+      .login-content{max-width:430px}
+      .brand{width:220px;margin-bottom:72px}
+      h1{font-size:42px}
+      .hero{display:none}
+    }
+    @media(max-width:420px){.brand{margin-bottom:58px}h1{font-size:36px}.intro{margin-bottom:32px}}
   </style>
 </head>
 <body>
   <main>
-    <h1>Beforest Document Generator</h1>
-    <p>Enter the app password to continue.</p>
-    ${error ? `<div class="error">${error}</div>` : ""}
-    <form method="post" action="/login">
-      <label for="password">Password</label>
-      <input id="password" name="password" type="password" autocomplete="current-password" autofocus>
-      <button type="submit">Log in</button>
-    </form>
+    <section class="login-panel">
+      <div class="login-content">
+        <img class="brand" src="https://i.ibb.co/Xr9S2Tk4/23-Beforest-Black-with-Tagline.png" alt="Beforest — Nature at Work">
+        <p class="eyebrow">Secure workspace</p>
+        <h1>Finance Document Generator</h1>
+        <p class="intro">Enter the application password to create and manage finance documents.</p>
+        ${error ? `<div class="error" role="alert">${error}</div>` : ""}
+        <form method="post" action="/login">
+          <label for="password">Password</label>
+          <div class="password-wrap">
+            <input id="password" name="password" type="password" autocomplete="current-password" required autofocus>
+            <button class="toggle" type="button" aria-controls="password" aria-label="Show password">Show</button>
+          </div>
+          <button class="submit" type="submit">Log in</button>
+        </form>
+      </div>
+    </section>
+    <section class="hero" aria-label="Beforest nature estate">
+      <img src="/assets/conservation-1.jpg" alt="Lush green Beforest conservation landscape">
+    </section>
   </main>
+  <script>
+    const password = document.getElementById('password');
+    const toggle = document.querySelector('.toggle');
+    toggle.addEventListener('click', () => {
+      const reveal = password.type === 'password';
+      password.type = reveal ? 'text' : 'password';
+      toggle.textContent = reveal ? 'Hide' : 'Show';
+      toggle.setAttribute('aria-label', reveal ? 'Hide password' : 'Show password');
+      password.focus();
+    });
+  </script>
 </body>
 </html>`;
 }
@@ -186,6 +246,11 @@ const server = http.createServer(async (req, res) => {
 
     if (!APP_PASSWORD) {
       send(res, 503, "APP_PASSWORD is not configured.");
+      return;
+    }
+
+    if (requestUrl.pathname === "/assets/conservation-1.jpg" && req.method === "GET") {
+      serveFile(res, LOGIN_HERO_FILE);
       return;
     }
 
