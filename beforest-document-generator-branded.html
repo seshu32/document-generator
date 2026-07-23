@@ -252,7 +252,7 @@ button:hover{background:var(--offwhite);border-color:var(--line-strong)}
     <div class="sec-head">Invoice details</div>
     <div class="field-hint">Start here. Invoice number, date and due date auto-fill, but can be edited.</div>
     <div class="fr">
-      <div class="ff"><div class="lbl">Invoice #</div><input id="i-num" placeholder="INV-000091" oninput="render()"/></div>
+      <div class="ff"><div class="lbl">Invoice #</div><input id="i-num" inputmode="numeric" placeholder="000091" oninput="sanitizeDigitsInput(this);render()"/></div>
       <div class="ff"><div class="lbl">Invoice date</div><input type="date" id="i-date" oninput="render()"/></div>
     </div>
     <div class="fr">
@@ -299,10 +299,10 @@ button:hover{background:var(--offwhite);border-color:var(--line-strong)}
     <div class="ff"><div class="lbl">Description</div><input id="i-desc" placeholder="Professional fee- Agri Advisory Services" oninput="render()"/></div>
     <div class="fr">
       <div class="ff"><div class="lbl">HSN/SAC</div><input id="i-hsn" placeholder="998399" oninput="render()"/></div>
-      <div class="ff"><div class="lbl">Qty</div><input id="i-qty" type="number" placeholder="1" oninput="render()"/></div>
+      <div class="ff"><div class="lbl">Qty</div><input id="i-qty" type="text" inputmode="numeric" placeholder="1" oninput="sanitizeDigitsInput(this);render()"/></div>
     </div>
     <div class="fr">
-      <div class="ff"><div class="lbl">Rate (Rs., excl. GST)</div><input id="i-rate" type="number" placeholder="1228813.56" oninput="render()"/></div>
+      <div class="ff"><div class="lbl">Rate (Rs., excl. GST)</div><input id="i-rate" type="text" inputmode="decimal" placeholder="1228813.56" oninput="sanitizeDecimalInput(this);render()"/></div>
       <div class="ff"><div class="lbl">IGST %</div>
         <select id="i-gst" onchange="render()">
           <option value="18">18%</option>
@@ -394,16 +394,16 @@ button:hover{background:var(--offwhite);border-color:var(--line-strong)}
     <div class="sec-head">Land & financials</div>
     <div class="field-hint">Figures drive the summary. Words are optional for draft use but should be filled before final PDF.</div>
     <div class="fr">
-      <div class="ff"><div class="lbl">Share (acres)</div><input id="m-acres" placeholder="2.5" oninput="render()"/></div>
-      <div class="ff"><div class="lbl">Private plot (acres)</div><input id="m-private" placeholder="0.5" oninput="render()"/></div>
+      <div class="ff"><div class="lbl">Share (acres)</div><input id="m-acres" inputmode="decimal" placeholder="2.5" oninput="sanitizeDecimalInput(this);render()"/></div>
+      <div class="ff"><div class="lbl">Private plot (acres)</div><input id="m-private" inputmode="decimal" placeholder="0.5" oninput="sanitizeDecimalInput(this);render()"/></div>
     </div>
     <div class="ff"><div class="lbl">Cost inclusions</div><textarea id="m-inclusions" rows="2" placeholder="GST, Registration, Stamp Duty, Operational Expenditure till June 2033..." oninput="render()">GST, Registration, Stamp Duty, Operational Expenditure till June 2033 and all other charges related to land registration and transfer</textarea></div>
     <div class="ff"><div class="lbl">Total consideration (Rs. in words)</div><input id="m-amt-words" placeholder="Fifty Lakh Only" oninput="render()"/></div>
-    <div class="ff"><div class="lbl">Total consideration (Rs. figures)</div><input id="m-amt-fig" type="number" placeholder="5000000" oninput="render()"/></div>
+    <div class="ff"><div class="lbl">Total consideration (Rs. figures)</div><input id="m-amt-fig" type="text" inputmode="decimal" placeholder="5000000" oninput="sanitizeDecimalInput(this);render()"/></div>
     <div class="ff"><div class="lbl">Balance consideration (Rs. in words)</div><input id="m-bal-words" placeholder="Thirty Five Lakh Only" oninput="render()"/></div>
-    <div class="ff"><div class="lbl">Balance consideration (Rs. figures)</div><input id="m-bal-fig" type="number" placeholder="3500000" oninput="render()"/></div>
+    <div class="ff"><div class="lbl">Balance consideration (Rs. figures)</div><input id="m-bal-fig" type="text" inputmode="decimal" placeholder="3500000" oninput="sanitizeDecimalInput(this);render()"/></div>
     <div class="ff"><div class="lbl">Advance paid (Rs. in words)</div><input id="m-adv-words" placeholder="Fifteen Lakh Only" oninput="render()"/></div>
-    <div class="ff"><div class="lbl">Advance paid (Rs. figures)</div><input id="m-adv-fig" type="number" placeholder="1500000" oninput="render()"/></div>
+    <div class="ff"><div class="lbl">Advance paid (Rs. figures)</div><input id="m-adv-fig" type="text" inputmode="decimal" placeholder="1500000" oninput="sanitizeDecimalInput(this);render()"/></div>
     </div>
     <hr class="div"/>
     <div class="form-band">
@@ -412,7 +412,7 @@ button:hover{background:var(--offwhite);border-color:var(--line-strong)}
     <div id="pay-rows">
       <div class="pay-row fr" style="margin-bottom:6px">
         <input type="date" oninput="render()"/>
-        <input type="number" placeholder="Amount (Rs.)" oninput="render()"/>
+        <input type="text" inputmode="decimal" placeholder="Amount (Rs.)" oninput="sanitizeDecimalInput(this);render()"/>
         <input placeholder="Payable to" oninput="render()"/>
       </div>
     </div>
@@ -517,8 +517,8 @@ button:hover{background:var(--offwhite);border-color:var(--line-strong)}
     <div class="form-band">
     <div class="sec-head">Pricing</div>
     <div class="field-hint">Booking amount plus GST and land/Beforest amount are used to calculate total cost.</div>
-    <div class="ff"><div class="lbl">Booking amount (Rs.)</div><input id="e-book" type="number" placeholder="200000" oninput="render()"/></div>
-    <div class="ff"><div class="lbl">Amount to land / Beforest (Rs.)</div><input id="e-llpamt" type="number" placeholder="4800000" oninput="render()"/></div>
+    <div class="ff"><div class="lbl">Booking amount (Rs.)</div><input id="e-book" type="text" inputmode="decimal" placeholder="200000" oninput="sanitizeDecimalInput(this);render()"/></div>
+    <div class="ff"><div class="lbl">Amount to land / Beforest (Rs.)</div><input id="e-llpamt" type="text" inputmode="decimal" placeholder="4800000" oninput="sanitizeDecimalInput(this);render()"/></div>
     </div>
     <hr class="div"/>
     <div class="form-band">
@@ -527,7 +527,7 @@ button:hover{background:var(--offwhite);border-color:var(--line-strong)}
       <div class="pay-row fr" style="margin-bottom:6px">
         <input placeholder="Status / milestone" oninput="render()"/>
         <input type="date" oninput="render()"/>
-        <input type="number" placeholder="Amount (Rs.)" oninput="render()"/>
+        <input type="text" inputmode="decimal" placeholder="Amount (Rs.)" oninput="sanitizeDecimalInput(this);render()"/>
         <input placeholder="Paid or To Pay" oninput="render()"/>
       </div>
     </div>
@@ -554,7 +554,7 @@ button:hover{background:var(--offwhite);border-color:var(--line-strong)}
       <div class="sec-head">Receipt details</div>
       <div class="fr">
         <div class="ff"><div class="lbl">Receipt date</div><input type="date" id="r-date" oninput="render()"/></div>
-        <div class="ff"><div class="lbl">Voucher number</div><input id="r-num" placeholder="59" oninput="render()"/></div>
+        <div class="ff"><div class="lbl">Voucher number</div><input id="r-num" inputmode="numeric" placeholder="59" oninput="sanitizeDigitsInput(this);render()"/></div>
       </div>
     </div>
     <hr class="div"/>
@@ -567,7 +567,7 @@ button:hover{background:var(--offwhite);border-color:var(--line-strong)}
     <hr class="div"/>
     <div class="form-band">
       <div class="sec-head">Payment details</div>
-      <div class="ff"><div class="lbl">Amount received (Rs.)</div><input id="r-amount" type="text" inputmode="decimal" placeholder="1,20,000" oninput="render()"/></div>
+      <div class="ff"><div class="lbl">Amount received (Rs.)</div><input id="r-amount" type="text" inputmode="decimal" placeholder="1,20,000" oninput="sanitizeDecimalInput(this,true);render()"/></div>
       <div class="ff"><div class="lbl">Towards</div><textarea id="r-towards" rows="3" placeholder="Working capital for day-to-day expenses..." oninput="render()"></textarea></div>
       <div class="fr">
         <div class="ff"><div class="lbl">Mode of payment</div>
@@ -878,6 +878,12 @@ const RECEIPT_PRESETS = {
   }
 };
 const RECEIPT_CONTACT={phone:"+91-7396044482",email:"crm@beforest.co",web:"www.beforest.co"};
+const INVOICE_BANK_DETAILS={
+  holder:"Beforest Lifestyle Solutions Pvt. Ltd.",
+  bank:"ICICI Bank",
+  acc:"2365 0500 1587",
+  ifsc:"ICIC0002365"
+};
 
 const WM = `<div class="doc-wm" style="top:-30px;right:-50px;width:320px;height:380px"><svg viewBox="0 0 300 360" xmlns="http://www.w3.org/2000/svg"><ellipse cx="180" cy="150" rx="130" ry="200" transform="rotate(-20 180 150)"/><ellipse cx="120" cy="200" rx="90" ry="150" transform="rotate(15 120 200)"/></svg></div><div class="doc-wm" style="bottom:-50px;left:-30px;width:220px;height:260px;opacity:.03;transform:rotate(180deg)"><svg viewBox="0 0 300 360" xmlns="http://www.w3.org/2000/svg"><ellipse cx="180" cy="150" rx="130" ry="200" transform="rotate(-20 180 150)"/><ellipse cx="120" cy="200" rx="90" ry="150" transform="rotate(15 120 200)"/></svg></div>`;
 const LOGO_URL = 'https://i.ibb.co/Xr9S2Tk4/23-Beforest-Black-with-Tagline.png';
@@ -892,6 +898,16 @@ function fa(val){const n=parseFloat(val);if(isNaN(n))return'-';return'Rs.'+n.toL
 function fan(val){const n=parseFloat(val);if(isNaN(n))return'-';return'Rs.'+n.toLocaleString('en-IN');}
 function numOr(val,fallback){const n=parseFloat(val);return Number.isFinite(n)?n:fallback;}
 function receiptAmount(val){const n=parseFloat(String(val||'').replace(/[₹,\s]/g,''));return Number.isFinite(n)?n:0;}
+function sanitizeDigitsInput(el){
+  el.value=String(el.value||'').replace(/\D/g,'');
+}
+function sanitizeDecimalInput(el,allowCommas=false){
+  let value=String(el.value||'').replace(allowCommas?/[^0-9.,]/g:/[^0-9.]/g,'');
+  const dot=value.indexOf('.');
+  if(dot!==-1)value=value.slice(0,dot+1)+value.slice(dot+1).replace(/\./g,'');
+  if(allowCommas)value=value.replace(/,+/g,',');
+  el.value=value;
+}
 function v(id){const e=document.getElementById(id);return e?e.value:'';}
 function setVal(id,val){const e=document.getElementById(id);if(e)e.value=val||'';}
 const REQUIRED_FIELDS={
@@ -1015,6 +1031,9 @@ function applyCollectivePreset(prefix){
       setVal('i-co-email',invoicePreset.email);
       setVal('i-pos',invoicePreset.placeOfSupply);
     }
+    setVal('i-co-bank',INVOICE_BANK_DETAILS.bank);
+    setVal('i-co-acc',INVOICE_BANK_DETAILS.acc);
+    setVal('i-co-ifsc',INVOICE_BANK_DETAILS.ifsc);
     setVal('i-desc',preset.product);
   }
   if(prefix==='m'){
@@ -1082,6 +1101,14 @@ function entity(prefix){
     ifsc:v(prefix+'-co-ifsc')||legalFallback(CO.ifsc)
   };
 }
+function mouPaymentBank(){
+  const preset=COLLECTIVE_PRESETS[v('m-preset')]||COLLECTIVE_PRESETS.default;
+  return {
+    bank:preset.bank,
+    acc:preset.acc,
+    ifsc:preset.ifsc
+  };
+}
 
 function switchTab(tab,el){
   currentTab=tab;
@@ -1110,7 +1137,7 @@ function render(){
 function buildInvoice(){
   const bname=v('i-bname');if(!bname.trim())return'';
   const ent=entity('i');
-  const num=v('i-num')||'INV-';
+  const num=v('i-num')||'0';
   const idate=fd(v('i-date'));
   const due=fd(v('i-due'));
   const pos=v('i-pos')||'-';
@@ -1172,7 +1199,7 @@ function buildInvoice(){
     <div class="inv-split-l">
       <div style="margin-bottom:8px"><strong>Total in words</strong><br/><em>${totalWords}</em></div>
       <div style="margin-bottom:10px">${notes}</div>
-      <div><strong>Account Holder:</strong> ${ent.name}<br/>
+      <div><strong>Account Holder:</strong> ${INVOICE_BANK_DETAILS.holder}<br/>
       <strong>Account No:</strong> ${ent.acc}<br/>
       <strong>Bank:</strong> ${ent.bank}<br/>
       <strong>IFSC:</strong> ${ent.ifsc}</div>
@@ -1196,6 +1223,7 @@ function buildInvoice(){
 function buildMoU(){
   const fname=v('m-fname');if(!fname.trim())return'';
   const ent=entity('m');
+  const paymentBank=mouPaymentBank();
   const place=v('m-place')||'Hyderabad';
   const date=fd(v('m-date'));
   const coll=v('m-coll')||'the Collective';
@@ -1317,7 +1345,7 @@ function buildMoU(){
     <tbody>${payRows}</tbody>
   </table>
   <div style="font-size:11px;color:var(--charcoal);line-height:1.8;margin-bottom:12px">
-    <strong>Bank details:</strong> ${ent.bank} | Account: ${ent.acc} | IFSC: ${ent.ifsc}
+    <strong>Bank details:</strong> ${paymentBank.bank} | Account: ${paymentBank.acc} | IFSC: ${paymentBank.ifsc}
   </div>
 
   <div class="mou-section">Annexure 2 - Common Facilities (under scope of Facilitator)</div>
@@ -1623,14 +1651,14 @@ function normalizePayRows(){
 function addPayRow(){
   const d=document.createElement('div');
   d.className='pay-row';
-  d.innerHTML='<input type="date" oninput="render()"/><input type="number" placeholder="Amount (Rs.)" oninput="render()"/><input placeholder="Payable to" oninput="render()"/>';
+  d.innerHTML='<input type="date" oninput="render()"/><input type="text" inputmode="decimal" placeholder="Amount (Rs.)" oninput="sanitizeDecimalInput(this);render()"/><input placeholder="Payable to" oninput="render()"/>';
   addRemoveButton(d);
   document.getElementById('pay-rows').appendChild(d);
 }
 function addEoiPayRow(){
   const d=document.createElement('div');
   d.className='pay-row eoi-pay-row';
-  d.innerHTML='<input placeholder="Status / milestone" oninput="render()"/><input type="date" oninput="render()"/><input type="number" placeholder="Amount (Rs.)" oninput="render()"/><input placeholder="Paid or To Pay" oninput="render()"/>';
+  d.innerHTML='<input placeholder="Status / milestone" oninput="render()"/><input type="date" oninput="render()"/><input type="text" inputmode="decimal" placeholder="Amount (Rs.)" oninput="sanitizeDecimalInput(this);render()"/><input placeholder="Paid or To Pay" oninput="render()"/>';
   addRemoveButton(d);
   document.getElementById('eoi-pay-rows').appendChild(d);
 }
@@ -1783,10 +1811,10 @@ async function saveToHistory(){
   const c=document.getElementById('doc-content');
   if(c.style.display==='none'){alert('Generate a document first.');return;}
   let name='',num='';
-  if(currentTab==='invoice'){name=v('i-bname');num=v('i-num')||'INV';}
+  if(currentTab==='invoice'){name=v('i-bname');num=v('i-num')||'0';}
   else if(currentTab==='mou'){name=v('m-fname');num='MOU';}
   else if(currentTab==='eoi'){name=v('e-name');num='EOI';}
-  else{name=v('r-name');num=v('r-num')||'RECEIPT';}
+  else{name=v('r-name');num=v('r-num')||'0';}
   if(!name.trim()){alert('Fill in member name first.');return;}
   const hist=loadHist();
   const record={id:Date.now(),tab:currentTab,name,num,date:new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}),html:c.innerHTML};
