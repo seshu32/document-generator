@@ -1104,6 +1104,7 @@ function entity(prefix){
 function mouPaymentBank(){
   const preset=COLLECTIVE_PRESETS[v('m-preset')]||COLLECTIVE_PRESETS.default;
   return {
+    entityName:preset.name||preset.collective,
     bank:preset.bank,
     acc:preset.acc,
     ifsc:preset.ifsc
@@ -1345,7 +1346,7 @@ function buildMoU(){
     <tbody>${payRows}</tbody>
   </table>
   <div style="font-size:11px;color:var(--charcoal);line-height:1.8;margin-bottom:12px">
-    <strong>Bank details:</strong> ${paymentBank.bank} | Account: ${paymentBank.acc} | IFSC: ${paymentBank.ifsc}
+    <strong>${paymentBank.entityName}</strong> | <strong>Bank details:</strong> ${paymentBank.bank} | Account: ${paymentBank.acc} | IFSC: ${paymentBank.ifsc}
   </div>
 
   <div class="mou-section">Annexure 2 - Common Facilities (under scope of Facilitator)</div>
